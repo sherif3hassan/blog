@@ -1,0 +1,7 @@
+POST  http://127.0.0.1:8000/api/posts/
+Content-Type: application/json
+
+{
+    "title": "New Post",
+    "body": "New Content"
+}
