@@ -37,7 +37,7 @@ class PostService
 
     public function update(PostDTO $PostDTO, int $id)
     {
-        $Post = $this->PostRepository->findById($id);
+        //$Post = $this->PostRepository->findById($id);
 
         $data = [
             'title' => $PostDTO->title,
@@ -48,8 +48,7 @@ class PostService
         if ($validator->fails()) {
             throw new \InvalidArgumentException($validator->errors()->first());
         }
-
-        return $this->PostRepository->update($Post, $data);
+        return $this->PostRepository->update($id, $data);
     }
 
     public function delete(int $id)
