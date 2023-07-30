@@ -1,7 +1,7 @@
-POST  http://127.0.0.1:8000/api/posts/
+Put  http://127.0.0.1:8000/api/posts/3
 Content-Type: application/json
 
 {
-    "title": "New Post",
-    "body": "New Content"
+    "title": "changed post",
+    "body": "changed Content "
 }

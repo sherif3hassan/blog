@@ -1,47 +1,40 @@
 <?php
+
 namespace App\Http\Controllers;
 
-// laravel data
-//authentication 
-//dto validator
-use App\DTOs\PostDTO ;
-use App\Http\Controllers\Controller;
+use App\DTOs\PostDTO;
 use App\Services\PostService;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class PostController extends Controller
 {
-    private $PostService;
+    private $postService;
 
-    public function __construct(PostService $PostService)
+    public function __construct(PostService $postService)
     {
-        $this->PostService = $PostService;
+        $this->postService = $postService;
     }
 
-    public function store(Request $request)
+    public function store(PostDTO $postDTO): JsonResponse
     {
-        $PostDTO= PostDTO::fromRequest($request);
+        $post = $this->postService->create($postDTO);
 
-        $Post = $this->PostService->create($PostDTO);
-
-        return response()->json($Post, 201);
+        return response()->json($post, 201);
     }
 
-    public function update(Request $request, int $id)
+    public function update(PostDTO $postDTO, int $id): JsonResponse
     {
-        $PostDTO = new PostDTO();
-        $PostDTO->title = $request->input('title');
-        $PostDTO->body = $request->input('body');
+        // Set the id property of the $postDTO using the $id route parameter
+        $postDTO->id = $id;
 
-        $Post = $this->PostService->update($PostDTO, $id);
+        $post = $this->postService->update($postDTO);
 
-        return response()->json($Post, 200);
+        return response()->json($post, 200);
     }
-
-    public function destroy(int $id)
+    public function destroy(int $id): JsonResponse
     {
-        $this->PostService->delete($id);
+        $this->postService->delete($id);
 
-        return response()->json(['message' => ' post deleted successfully'], 200);
+        return response()->json(['message' => 'Post deleted successfully'], 200);
     }
 }

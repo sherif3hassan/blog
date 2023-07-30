@@ -3,58 +3,56 @@
 namespace App\Services;
 
 use App\DTOs\PostDTO;
-use App\Http\Validators\PostValidator;
+use App\Models\Post;
 use App\Repositories\PostRepository;
 use Illuminate\Support\Facades\Log;
 
 class PostService
 {
-    private $PostRepository;
+    private $postRepository;
 
-    public function __construct(PostRepository $PostRepository)
+    public function __construct(PostRepository $postRepository)
     {
-        $this->PostRepository = $PostRepository;
+        $this->postRepository = $postRepository;
     }
 
-    public function create(PostDTO $PostDTO)
+    public function create(PostDTO $postDTO): Post
     {
-        //log in terminal $postDTO
-        
+        //log the $postDTO if needed
+        Log::info($postDTO);
 
         $data = [
-            'title' => $PostDTO->title,
-            'body' => $PostDTO->body,
+            'title' => $postDTO->title,
+            'body' => $postDTO->body,
         ];
-        //log in terminal $data
 
-        $validator = PostValidator::validate($data);
-        if ($validator->fails()) {
-            throw new \InvalidArgumentException($validator->errors()->first());
-        }
+        // You can perform additional business logic or validation if needed
 
-        return $this->PostRepository->create($data);
+        return $this->postRepository->create($data);
     }
 
-    public function update(PostDTO $PostDTO, int $id)
+    public function update(PostDTO $postDTO): Post
     {
-        $Post = $this->PostRepository->findById($id);
+        // Check if the id property is null, which means we are creating a new post
+        if ($postDTO->id === null) {
+            throw new \InvalidArgumentException('Cannot update post without an id.');
+        }
+
+        $post = $this->postRepository->findById($postDTO->id);
 
         $data = [
-            'title' => $PostDTO->title,
-            'body' => $PostDTO->body,
+            'title' => $postDTO->title,
+            'body' => $postDTO->body,
         ];
 
-        $validator = PostValidator::validate($data);
-        if ($validator->fails()) {
-            throw new \InvalidArgumentException($validator->errors()->first());
-        }
+        // You can perform additional business logic or validation if needed
 
-        return $this->PostRepository->update($Post, $data);
+        return $this->postRepository->update($post, $data);
     }
 
-    public function delete(int $id)
+    public function delete(int $id): void
     {
-        $Post = $this->PostRepository->findById($id);
-        $this->PostRepository->delete($Post);
+        $post = $this->postRepository->findById($id);
+        $this->postRepository->delete($post);
     }
 }
