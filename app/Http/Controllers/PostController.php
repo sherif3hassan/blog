@@ -1,6 +1,9 @@
 <?php
 namespace App\Http\Controllers;
 
+// laravel data
+//authentication 
+//dto validator
 use App\DTOs\PostDTO ;
 use App\Http\Controllers\Controller;
 use App\Services\PostService;

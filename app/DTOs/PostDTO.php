@@ -6,8 +6,7 @@ use Illuminate\Http\Request;
 
 class PostDTO{
 
-    // id is it required?
-    // id optional
+
     public $id;
     public $title;
     public $body;
