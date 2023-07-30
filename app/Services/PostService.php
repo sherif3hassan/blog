@@ -31,23 +31,19 @@ class PostService
         return $this->postRepository->create($data);
     }
 
-    public function update(PostDTO $postDTO): Post
+    public function update(PostDTO $postDTO,int $id): Post
     {
         // Check if the id property is null, which means we are creating a new post
-        if ($postDTO->id === null) {
+        if ($id === null) {
             throw new \InvalidArgumentException('Cannot update post without an id.');
         }
-
-        $post = $this->postRepository->findById($postDTO->id);
 
         $data = [
             'title' => $postDTO->title,
             'body' => $postDTO->body,
         ];
 
-        // You can perform additional business logic or validation if needed
-
-        return $this->postRepository->update($post, $data);
+        return $this->postRepository->update($id, $data);
     }
 
     public function delete(int $id): void

@@ -24,12 +24,16 @@ class PostController extends Controller
 
     public function update(PostDTO $postDTO, int $id): JsonResponse
     {
-        // Set the id property of the $postDTO using the $id route parameter
-        $postDTO->id = $id;
-
-        $post = $this->postService->update($postDTO);
-
-        return response()->json($post, 200);
+        $post = $this->postService->update($postDTO, $id);
+        
+        if($post)
+        {
+            return response()->json($post, 200);
+        }
+        else
+        {
+            return response()->json(['message' => 'Post not found'], 404);
+        }
     }
     public function destroy(int $id): JsonResponse
     {

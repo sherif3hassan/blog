@@ -2,9 +2,11 @@
 
 namespace App\Repositories;
 
+use Illuminate\Database\Eloquent\Model;
+
 class  BaseRepository implements RepositoryInterface {
 
-    protected $model;
+    protected Model $model;
     public function __construct($model){
         $this->model=$model;
     }
@@ -16,11 +18,18 @@ class  BaseRepository implements RepositoryInterface {
     }
     public function update($id, $attributes)
     {
-        return $this->model->find($id)->update($attributes);
+        if($this->model->find($id)->update($attributes))
+        {
+            return $this->model->find($id);
+        }
+        else
+        {
+            return null;
+        }
     }
     public function delete($id)
     {
-        return $this->model->find($id)->delete();
+        return $this->model->find($id)->each->delete();
     }
     public function findById($id)
     {
