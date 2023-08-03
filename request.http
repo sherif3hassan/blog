@@ -1,10 +1,10 @@
-post  http://localhost:8000/api/posts
+get  http://localhost:8000/api/posts/1
 Content-Type: application/json
 
 
 {
-    "title": "New post",
-    "body": "New post body"
+    "title": "New post 2",
+    "body": "New post body 2"
 }
 
 
