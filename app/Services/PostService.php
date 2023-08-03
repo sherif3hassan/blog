@@ -16,13 +16,13 @@ class PostService
         $this->postRepository = $postRepository;
     }
 
-    public function create(PostDTO $postDTO): Post
+    public function create(PostDTO $postDTO)
     {
         return $this->postRepository->create($postDTO);
     }
 
     // get event by id 
-    public function findById(int $id): Post
+    public function findById(int $id)
     {
         return $this->postRepository->findById($id);
     }
@@ -30,7 +30,7 @@ class PostService
 
 
 
-    public function update(PostDTO $postDTO,int $id): Post
+    public function update(PostDTO $postDTO,int $id)
     {
         return $this->postRepository->update($id, $postDTO);
     }

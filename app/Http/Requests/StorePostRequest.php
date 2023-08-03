@@ -26,7 +26,6 @@ class StorePostRequest extends FormRequest
             'id' => 'sometimes|integer', // Validation for the optional 'id' field
             'title' => 'required|string|max:255',
             'body' => 'required|string',
-            'author_id' => 'required|numeric',
         ];
     }
 }
