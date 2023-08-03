@@ -23,11 +23,12 @@ Route::get('me', [AuthController::class, 'me'])->middleware('auth:api');
 
 // Route::post('/posts', [PostController::class, 'store']);
 // Post routes
-Route::middleware('auth:api')->group(function () {
-    Route::post('/posts', [PostController::class, 'store']);
-    Route::put('/posts/{id}', [PostController::class, 'update']);
-    Route::delete('/posts/{id}', [PostController::class, 'destroy']);
-});
+// Route::middleware('auth:api')->group(function () {
+//     Route::apiResource('posts', PostController::class);
+    // Route::post('/posts', [PostController::class, 'store']);
+    // Route::put('/posts/{id}', [PostController::class, 'update']);
+    // Route::delete('/posts/{id}', [PostController::class, 'destroy']);
+// });
 
     // Route::apiResource('posts', PostController::class);
 

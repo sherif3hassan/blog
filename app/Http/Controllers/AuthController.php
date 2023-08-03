@@ -17,7 +17,7 @@ class AuthController extends Controller
     public function __construct(UserService $userService)
     {
         $this->userService = $userService;
-        $this->middleware('auth:api', ['except' => ['register', 'login']]);
+        // $this->middleware('auth:api', ['except' => ['register', 'login']]);
     }
 
     public function register(RegisterUserRequest $request)
@@ -30,12 +30,13 @@ class AuthController extends Controller
 
     public function login(LoginUserRequest $request)
     {
-        $userDTO= UserDTO::from($request->validated());
-        if (!$token = $this->userService->login($userDTO)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
+        // $userDTO= UserDTO::from($request->validated());
+        // if (!$token = $this->userService->login($userDTO)) {
+        //     return response()->json(['error' => 'Unauthorized'], 401);
+        // }
 
-        return $this->respondWithToken($token);
+        // return $this->respondWithToken($token);
+        return $request;
     }
 
     public function me()

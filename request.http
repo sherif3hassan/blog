@@ -1,11 +1,30 @@
-post  http://localhost:8000/api/posts
+# post  http://localhost:8000/api/posts
+# Content-Type: application/json
+# Authorization: bearer {}
+
+# {
+#     "title": "My first post",
+#     "body": "This is my first post"
+# }
+# post  http://localhost:8000/api/login
+# Content-Type: application/json
+
+
+# {
+#     "email": "sh@gmail.com",
+#     "password": "1234567"
+# }
+
+post http://localhost:8000/api/register
 Content-Type: application/json
-Authorization: bearer {eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNjkxMDU0ODI5LCJleHAiOjE2OTEwNTg0MjksIm5iZiI6MTY5MTA1NDgyOSwianRpIjoiSEVHVkN2VkxIYjJCa2V2NyIsInN1YiI6IjMiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.GW6cCPxjZGEjFe5754Ufk_hMc3503f2AIVsFRzAu4Rg}
+
 
 {
-    "title": "post 1",
-    "body": "post 1 body"
+    "name": "mo",
+    "email": "mo@gmail.com"
 }
+
+
 
 
 
