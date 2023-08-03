@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\LaravelData\Data;
 
 class  BaseRepository implements RepositoryInterface {
 
@@ -11,20 +12,16 @@ class  BaseRepository implements RepositoryInterface {
         $this->model=$model;
     }
 
-    public function create($attributes)
+    public function create(Data $data)
     {
-        return $this->model->create($attributes);
+        return $this->model->create($data->toArray());
 
     }
-    public function update($id, $attributes)
+    public function update($id, $data)
     {
-        if($this->model->find($id)->update($attributes))
+        if($this->model->find($id)->update($data->toArray()))
         {
             return $this->model->find($id);
-        }
-        else
-        {
-            return null;
         }
     }
     public function delete($id)
@@ -35,6 +32,7 @@ class  BaseRepository implements RepositoryInterface {
     {
         return $this->model->find($id);
     }
+
 
 
 }

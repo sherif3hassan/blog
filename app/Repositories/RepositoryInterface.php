@@ -2,10 +2,12 @@
 
 namespace App\Repositories;
 
+use Spatie\LaravelData\Data;
+
 interface RepositoryInterface{
 
-    public function create($attributes);
-    public function update($id, $attributes);
+    public function create(Data $data);
+    public function update($id, Data $data);
     public function delete($id);
 
 

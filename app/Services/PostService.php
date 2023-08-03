@@ -18,32 +18,21 @@ class PostService
 
     public function create(PostDTO $postDTO): Post
     {
-        //log the $postDTO if needed
-        Log::info($postDTO);
-
-        $data = [
-            'title' => $postDTO->title,
-            'body' => $postDTO->body,
-        ];
-
-        // You can perform additional business logic or validation if needed
-
-        return $this->postRepository->create($data);
+        return $this->postRepository->create($postDTO);
     }
+
+    // get event by id 
+    public function findById(int $id): Post
+    {
+        return $this->postRepository->findById($id);
+    }
+
+
+
 
     public function update(PostDTO $postDTO,int $id): Post
     {
-        // Check if the id property is null, which means we are creating a new post
-        if ($id === null) {
-            throw new \InvalidArgumentException('Cannot update post without an id.');
-        }
-
-        $data = [
-            'title' => $postDTO->title,
-            'body' => $postDTO->body,
-        ];
-
-        return $this->postRepository->update($id, $data);
+        return $this->postRepository->update($id, $postDTO);
     }
 
     public function delete(int $id): void
