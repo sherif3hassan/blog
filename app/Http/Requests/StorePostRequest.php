@@ -11,7 +11,7 @@ class StorePostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,6 +23,9 @@ class StorePostRequest extends FormRequest
     {
         return [
             //
+            'id' => 'sometimes|integer', // Validation for the optional 'id' field
+            'title' => 'required|string|max:255',
+            'body' => 'required|string',
         ];
     }
 }

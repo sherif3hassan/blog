@@ -3,57 +3,41 @@
 namespace App\Services;
 
 use App\DTOs\PostDTO;
-use App\Http\Validators\PostValidator;
+use App\Models\Post;
 use App\Repositories\PostRepository;
 use Illuminate\Support\Facades\Log;
 
 class PostService
 {
-    private $PostRepository;
+    private $postRepository;
 
-    public function __construct(PostRepository $PostRepository)
+    public function __construct(PostRepository $postRepository)
     {
-        $this->PostRepository = $PostRepository;
+        $this->postRepository = $postRepository;
     }
 
-    public function create(PostDTO $PostDTO)
+    public function create(PostDTO $postDTO)
     {
-        //log in terminal $postDTO
-        
-
-        $data = [
-            'title' => $PostDTO->title,
-            'body' => $PostDTO->body,
-        ];
-        //log in terminal $data
-
-        $validator = PostValidator::validate($data);
-        if ($validator->fails()) {
-            throw new \InvalidArgumentException($validator->errors()->first());
-        }
-
-        return $this->PostRepository->create($data);
+        return $this->postRepository->create($postDTO);
     }
 
-    public function update(PostDTO $PostDTO, int $id)
+    // get event by id 
+    public function findById(int $id)
     {
-        //$Post = $this->PostRepository->findById($id);
-
-        $data = [
-            'title' => $PostDTO->title,
-            'body' => $PostDTO->body,
-        ];
-
-        $validator = PostValidator::validate($data);
-        if ($validator->fails()) {
-            throw new \InvalidArgumentException($validator->errors()->first());
-        }
-        return $this->PostRepository->update($id, $data);
+        return $this->postRepository->findById($id);
     }
 
-    public function delete(int $id)
+
+
+
+    public function update(PostDTO $postDTO,int $id)
     {
-        $Post = $this->PostRepository->findById($id);
-        $this->PostRepository->delete($Post);
+        return $this->postRepository->update($id, $postDTO);
+    }
+
+    public function delete(int $id): void
+    {
+        $post = $this->postRepository->findById($id);
+        $this->postRepository->delete($post);
     }
 }

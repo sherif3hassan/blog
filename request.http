@@ -1,7 +1,16 @@
-POST  http://127.0.0.1:8000/api/posts/
+get  http://localhost:8000/api/posts/1
 Content-Type: application/json
 
+
 {
-    "title": "New Post",
-    "body": "New Content"
+    "title": "New post 2",
+    "body": "New post body 2"
 }
+
+
+
+
+
+   
+
+

@@ -2,30 +2,42 @@
 
 namespace App\Repositories;
 
+use Illuminate\Database\Eloquent\Model;
+use Spatie\LaravelData\Data;
+
 class  BaseRepository implements RepositoryInterface {
 
-    protected $model;
+    protected Model $model;
     public function __construct($model){
         $this->model=$model;
     }
 
-    public function create($attributes)
+    public function create(Data $data)
     {
-        return $this->model->create($attributes);
+        return $this->model->create($data->toArray());
 
     }
-    public function update($id, $attributes)
+    public function update($id, $data)
     {
-        return $this->model->find($id)->update($attributes);
+        if($this->model->find($id)->update($data->toArray()))
+        {
+            return $this->model->find($id);
+        }
     }
     public function delete($id)
     {
-        return $this->model->find($id)->delete();
+        return $this->model->find($id)->each->delete();
     }
     public function findById($id)
     {
         return $this->model->find($id);
     }
+
+    public function all()
+    {
+        return $this->model->all();
+    }
+
 
 
 }

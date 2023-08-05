@@ -1,47 +1,73 @@
 <?php
+
 namespace App\Http\Controllers;
-
-// laravel data
-//authentication 
-//dto validator
-use App\DTOs\PostDTO ;
-use App\Http\Controllers\Controller;
+use App\DTOs\PostDTO;
 use App\Services\PostService;
-use Illuminate\Http\Request;
+use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\UpdatePostRequest;
 
-class PostController extends Controller
+class PostController  extends Controller
 {
-    private $PostService;
-
-    public function __construct(PostService $PostService)
+    
+    private $postService;
+    
+    public function __construct(PostService $postService)
     {
-        $this->PostService = $PostService;
+        $this->postService = $postService;
+    }
+   
+    public function store(StorePostRequest $request)
+    {
+        // //
+        $postDTO= PostDTO::from($request->validated());
+        $post = $this->postService->create($postDTO);
+        return response()->json($post, 201);
     }
 
-    public function store(Request $request)
+    /**
+     * Display the specified resource.
+     */
+    public function show(int $id)
     {
-        $PostDTO= PostDTO::fromRequest($request);
+        //
+        $post = $this->postService->findById($id);
 
-        $Post = $this->PostService->create($PostDTO);
-
-        return response()->json($Post, 201);
+        if($post)
+        {
+            return response()->json($post, 200);
+        }
+        else
+        {
+            return response()->json(['message' => 'Post not found'], 404);
+        }
     }
 
-    public function update(Request $request, int $id)
+  
+    public function update(UpdatePostRequest $request, int $id)
     {
-        $PostDTO = new PostDTO();
-        $PostDTO->title = $request->input('title');
-        $PostDTO->body = $request->input('body');
-
-        $Post = $this->PostService->update($PostDTO, $id);
-
-        return response()->json($Post, 200);
+        //
+        
+        $postDTO= PostDTO::from($request->validated());
+        $post = $this->postService->update($postDTO, $id);
+        
+        if($post)
+        {
+            return response()->json($post, 200);
+        }
+        else
+        {
+            return response()->json(['message' => 'Post not found'], 404);
+        }
     }
 
+    /**
+     * Remove the specified resource from storage.
+     */
     public function destroy(int $id)
     {
-        $this->PostService->delete($id);
+        //
+        $this->postService->delete($id);
 
-        return response()->json(['message' => ' post deleted successfully'], 200);
+        return response()->json(['message' => 'Post deleted successfully'], 200);
     }
 }
