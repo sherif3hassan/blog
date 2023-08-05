@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
+use PHPOpenSourceSaver\JWTAuth\Facades;
 use PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException;
 
 class AuthController extends Controller
@@ -34,15 +35,11 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
-
-        try {
-            if (!$token = JWTAuth::attempt($credentials)) {
-                return response()->json(['error' => 'Invalid credentials'], 401);
-            }
-        } catch (JWTException $e) {
-            return response()->json(['error' => 'Could not create token'], 500);
+        $credentials = request(['email', 'password']);
+        $token = auth()->attempt($credentials);
+        if (!$token){
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
-
         return response()->json(['token' => $token]);
     }
 
@@ -56,7 +53,6 @@ class AuthController extends Controller
     // Get authenticated user details
     public function me()
     {
-        $user = JWTAuth::user();
-        return response()->json(['user' => $user]);
+        return response()->json(auth()->user());
     }
 }
