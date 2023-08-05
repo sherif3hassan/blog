@@ -1,15 +1,17 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
+use PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException;
 
 class AuthController extends Controller
 {
+
+
     // User registration
     public function register(Request $request)
     {
@@ -31,35 +33,30 @@ class AuthController extends Controller
     // User login
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
-
         $credentials = $request->only('email', 'password');
-        $realToken=Auth::attempt($credentials);
-        if ($realToken) {
-            $user = Auth::user();
-            $token = $user->createToken('authToken')->plainTextToken;
 
-            return response()->json(['token' => $token,
-        'realToken'=>$realToken]);
+        try {
+            if (!$token = JWTAuth::attempt($credentials)) {
+                return response()->json(['error' => 'Invalid credentials'], 401);
+            }
+        } catch (JWTException $e) {
+            return response()->json(['error' => 'Could not create token'], 500);
         }
 
-        throw ValidationException::withMessages(['email' => 'Invalid credentials']);
+        return response()->json(['token' => $token]);
     }
 
     // User logout
-    public function logout(Request $request)
+    public function logout()
     {
-        $request->user()->tokens()->delete();
-
-        return response()->json(['message' => 'Logout Success']);
+        auth()->logout();
+        return response()->json(['message' => 'Logged out successfully']);
     }
 
     // Get authenticated user details
-    public function me(Request $request)
+    public function me()
     {
-        return response()->json(['user' => $request->user()]);
+        $user = JWTAuth::user();
+        return response()->json(['user' => $user]);
     }
 }

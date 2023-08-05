@@ -23,13 +23,13 @@ use App\Http\Controllers\AuthController;
 // guard route apiresource using jwt
 Route::group(['middleware' => ['auth:api']], function () {
     Route::apiResource('posts', PostController::class);
+    Route::post('logout', [AuthController::class, 'logout']);
+    Route::get('me', [AuthController::class, 'me']);
 });
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
-Route::post('logout', [AuthController::class, 'logout']);
-Route::get('user', [AuthController::class, 'user']);
-Route::get('me', [AuthController::class, 'me']);
+
 
 // Route::post('/posts', [PostController::class, 'store']);
 // Route::put('/posts/{id}', [PostController::class, 'update']);
