@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +20,8 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 Route::apiResource('posts', PostController::class);
+Route::post('register', [AuthController::class, 'register']);
+Route::post('login', [AuthController::class, 'login']);
 
 // Route::post('/posts', [PostController::class, 'store']);
 // Route::put('/posts/{id}', [PostController::class, 'update']);

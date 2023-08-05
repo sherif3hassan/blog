@@ -6,7 +6,7 @@ use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Optional;
 
 class PostDTO extends Data
-{   // make id optional for create
+{   
         public int | Optional $id;
         public string $title;
         public string $body;
