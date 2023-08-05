@@ -3,114 +3,63 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    //
-    public function __construct()
-    {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
-        
-    }
-
-    // register
+    // User registration
     public function register(Request $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required',
-            'email' => 'email|required',
-            'password' => 'required|min:6'
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|unique:users|max:255',
+            'password' => 'required|string|min:8',
         ]);
-        
-        $validatedData['password'] = bcrypt($request->password);
-        
-        $user = User::create($validatedData);
-        
-        // $accessToken = $user->createToken('authToken')->accessToken;
-        $token=Auth::login($user);
-        
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Register Success',
-            'user' => $user,
-            'token' => $token
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
         ]);
-    
+
+        return response()->json(['message' => 'User registered successfully']);
     }
 
-    // login
+    // User login
     public function login(Request $request)
     {
-        $loginData = $request->validate([
-            'email' => 'required',
-            'password' => 'required'
+        $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string',
         ]);
 
         $credentials = $request->only('email', 'password');
-        $token=Auth::attempt($credentials);
-        if (!$token) {
-            return response()->json([
-                'status' => 'error',
-                'message' => ' unauthorized'
-            ]);
+        $realToken=Auth::attempt($credentials);
+        if ($realToken) {
+            $user = Auth::user();
+            $token = $user->createToken('authToken')->plainTextToken;
+
+            return response()->json(['token' => $token,
+        'realToken'=>$realToken]);
         }
-        
-        // $accessToken = Auth::user()->createToken('authToken')->accessToken;
-        
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Login Success',
-            // 'user' => Auth::user(),
-            'token' => $token
-        ]);
-    
+
+        throw ValidationException::withMessages(['email' => 'Invalid credentials']);
     }
 
-    // logout
+    // User logout
     public function logout(Request $request)
     {
-        $request->user()->token()->revoke();
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Logout Success'
-        ]);
+        $request->user()->tokens()->delete();
+
+        return response()->json(['message' => 'Logout Success']);
     }
 
-    // get user
-    public function user(Request $request)
+    // Get authenticated user details
+    public function me(Request $request)
     {
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Get User Success',
-            'user' => auth()->user()
-        ]);
-    }
-
-    //me
-    public function me()
-    {
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Get User Success',
-            'user' => Auth::user()
-        ]);
-    }
-
-      /**
-     * Get the token array structure.
-     *
-     * @param  string $token
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    protected function respondWithToken($token)
-    {
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
-        ]);
+        return response()->json(['user' => $request->user()]);
     }
 }
