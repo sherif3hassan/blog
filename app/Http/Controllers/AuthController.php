@@ -53,7 +53,7 @@ class AuthController extends Controller
         if (!$token) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'login failed'
+                'message' => ' unauthorized'
             ]);
         }
         
@@ -66,5 +66,51 @@ class AuthController extends Controller
             'token' => $token
         ]);
     
+    }
+
+    // logout
+    public function logout(Request $request)
+    {
+        $request->user()->token()->revoke();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Logout Success'
+        ]);
+    }
+
+    // get user
+    public function user(Request $request)
+    {
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Get User Success',
+            'user' => auth()->user()
+        ]);
+    }
+
+    //me
+    public function me()
+    {
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Get User Success',
+            'user' => Auth::user()
+        ]);
+    }
+
+      /**
+     * Get the token array structure.
+     *
+     * @param  string $token
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function respondWithToken($token)
+    {
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->factory()->getTTL() * 60
+        ]);
     }
 }
