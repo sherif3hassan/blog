@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 // add opensource server php jwt
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
@@ -44,6 +45,16 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Get all of the posts for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<Post>
+     */
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class);
+    }
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.

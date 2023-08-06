@@ -21,6 +21,13 @@ use App\Http\Controllers\AuthController;
 // });
 // Route::apiResource('posts', PostController::class);
 // guard route apiresource using jwt
+// Route::apiResource('users', 'UsersController');
+// Verb         Path                       Action Route Name
+// GET          /users                     index  users.index
+// POST         /users                     store  users.store
+// GET          /users/{user}              show   users.show
+// PUT|PATCH    /users/{user}              update users.update
+// DELETE       /users/{user}              destroy users.destroy
 Route::group(['middleware' => ['auth:api']], function () {
     Route::apiResource('posts', PostController::class);
     Route::post('logout', [AuthController::class, 'logout']);

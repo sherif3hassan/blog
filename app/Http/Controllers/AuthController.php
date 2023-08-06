@@ -1,58 +1,55 @@
 <?php
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
-use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
-use PHPOpenSourceSaver\JWTAuth\Facades;
-use PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
+use App\DTOs\UserDTO;
+use App\Services\AuthService;
 
 class AuthController extends Controller
 {
+    private $authService;
+    
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
+    }
 
 
     // User registration
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|unique:users|max:255',
-            'password' => 'required|string|min:8',
-        ]);
+        $userDTO= UserDTO::from($request->validated());
+        $user = $this->authService->register($userDTO);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        return response()->json(['message' => 'User registered successfully']);
+        return response()->json([
+            'message' => 'User registered successfully',
+            'user' => $user
+        ], 201);
     }
 
     // User login
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $credentials = $request->only('email', 'password');
-        $credentials = request(['email', 'password']);
-        $token = auth()->attempt($credentials);
-        if (!$token){
-            return response()->json(['error' => 'Unauthorized'], 401);
+        $userDTO= UserDTO::from($request->validated());
+        try {
+            $token = $this->authService->login($userDTO);
+            return response()->json(['token' => $token]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Invalid credentials'], 401);
         }
-        return response()->json(['token' => $token]);
     }
 
     // User logout
     public function logout()
     {
-        auth()->logout();
+        $this->authService->logout();
         return response()->json(['message' => 'Logged out successfully']);
     }
 
     // Get authenticated user details
     public function me()
     {
-        return response()->json(auth()->user());
+        return $this->authService->me();
     }
 }

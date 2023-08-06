@@ -5,6 +5,9 @@ namespace App\Services;
 use App\DTOs\PostDTO;
 use App\Models\Post;
 use App\Repositories\PostRepository;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Support\Facades\Log;
 
 class PostService
@@ -18,6 +21,7 @@ class PostService
 
     public function create(PostDTO $postDTO)
     {
+        $postDTO->user_id = Auth::id();
         return $this->postRepository->create($postDTO);
     }
 
@@ -28,16 +32,39 @@ class PostService
     }
 
 
-
-
-    public function update(PostDTO $postDTO,int $id)
+    public function update(PostDTO $postDTO, int $id)
     {
+        if(!$this->postRepository->findById($id))
+        {
+            throw new ModelNotFoundException('Post not found');
+        }
+        if (!$this->isPostOwnedByUser($id)) {
+            throw new \Exception('unauthorized');
+        }
         return $this->postRepository->update($id, $postDTO);
     }
 
     public function delete(int $id): void
     {
         $post = $this->postRepository->findById($id);
+        if (!$post) {
+            throw new ModelNotFoundException('Post not found');
+        }
+        if (!$this->isPostOwnedByUser($id)) {
+            throw new \Exception('unauthorized');
+        }
         $this->postRepository->delete($post);
+    }
+
+
+    public function isPostOwnedByUser(int $postId): bool
+    {
+        $post = $this->postRepository->findById($postId);
+
+        if (!$post) {
+            return false;
+        }
+
+        return Auth::id() === $post->user_id;
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Http\Controllers\PostController;
+use App\Services\AuthService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +20,9 @@ class AppServiceProvider extends ServiceProvider
         );
         $this->app->bind(PostController::class, function ($app) {
             return new PostController($app->make(\App\Services\PostService::class));
+        });
+        $this->app->bind(AuthService::class, function ($app) {
+            return new AuthService();
         });
         $this->app->bind(
             \App\Services\PostService::class

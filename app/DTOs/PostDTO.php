@@ -8,6 +8,7 @@ use Spatie\LaravelData\Optional;
 class PostDTO extends Data
 {   
         public int | Optional $id;
-        public string $title;
-        public string $body;
+        public string | Optional $title;
+        public string | Optional $body;
+        public int | Optional $user_id;
 }
