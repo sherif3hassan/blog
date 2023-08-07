@@ -6,6 +6,8 @@ namespace App\Services;
 use App\DTOs\UserDTO;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\RegistrationConfirmation;
 
 class AuthService
 {
@@ -17,6 +19,9 @@ public function register(UserDTO $userDTO)
             'email' => $userDTO->email,
             'password' => Hash::make($userDTO->password),
         ]);
+        if($user){
+            Mail::to($user->email)->send(new RegistrationConfirmation($user->name));
+        }
         return  $user;
     }
 
