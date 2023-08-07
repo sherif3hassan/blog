@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use App\Models\Post;
 use Exception;
 use Illuminate\Http\Response;
 
@@ -44,12 +45,12 @@ class PostController  extends Controller
     }
 
 
-    public function update(UpdatePostRequest $request, int $id)
+    public function update(UpdatePostRequest $request, Post $post)
     {
         //
         try {
             $postDTO = PostDTO::from($request->validated());
-            $post = $this->postService->update($postDTO, $id);
+            $post = $this->postService->update($postDTO, $post->getKey());
 
             return response()->json($post, Response::HTTP_OK);
         } catch (ModelNotFoundException $e) {

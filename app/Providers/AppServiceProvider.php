@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Http\Controllers\PostController;
 use App\Services\AuthService;
 use Illuminate\Support\ServiceProvider;
+use App\Models\Post;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,12 +15,13 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         //
-        $this->app->bind(
+        $this->app->singleton(
             \App\Repositories\PostRepositoryInterface::class,
             \App\Repositories\PostRepository::class
         );
-        $this->app->bind(PostController::class, function ($app) {
-            return new PostController($app->make(\App\Services\PostService::class));
+        $this->app->bind(Post::class, function ($app) {
+            // You can add any custom logic to resolve the Post model here if needed.
+            return new Post();
         });
         $this->app->bind(AuthService::class, function ($app) {
             return new AuthService();

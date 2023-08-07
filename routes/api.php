@@ -29,7 +29,8 @@ use App\Http\Controllers\AuthController;
 // PUT|PATCH    /users/{user}              update users.update
 // DELETE       /users/{user}              destroy users.destroy
 Route::group(['middleware' => ['auth:api']], function () {
-    Route::apiResource('posts', PostController::class);
+    // Route::apiResource('posts', PostController::class);
+    Route::put('/posts/{post}', [PostController::class, 'update']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('me', [AuthController::class, 'me']);
 });
