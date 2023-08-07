@@ -24,8 +24,8 @@ class UpdatePostRequest extends FormRequest
     {
         return [
             //
-            'title' => 'required|string|max:255',
-            'body' => 'required|string',
+            'title' => 'string|max:255',
+            'body' => 'string',
         ];
     }
 }
