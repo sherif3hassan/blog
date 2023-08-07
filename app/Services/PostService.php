@@ -34,11 +34,12 @@ class PostService
 
     public function update(PostDTO $postDTO, int $id)
     {
-        if(!$this->postRepository->findById($id))
+        $post = $this->postRepository->findById($id);
+        if(!$post)
         {
             throw new ModelNotFoundException('Post not found');
         }
-        if (!$this->isPostOwnedByUser($id)) {
+        if (auth()->user()->cannot('update', $post)) {
             throw new \Exception('unauthorized');
         }
         return $this->postRepository->update($id, $postDTO);
@@ -50,21 +51,24 @@ class PostService
         if (!$post) {
             throw new ModelNotFoundException('Post not found');
         }
-        if (!$this->isPostOwnedByUser($id)) {
+        
+
+            // use policy to check if user is authorized to delete post
+        if (auth()->user()->cannot('delete', $post)) {
             throw new \Exception('unauthorized');
         }
         $this->postRepository->delete($post);
     }
 
 
-    public function isPostOwnedByUser(int $postId): bool
-    {
-        $post = $this->postRepository->findById($postId);
+    // public function isPostOwnedByUser(int $postId): bool
+    // {
+    //     $post = $this->postRepository->findById($postId);
 
-        if (!$post) {
-            return false;
-        }
+    //     if (!$post) {
+    //         return false;
+    //     }
 
-        return Auth::id() === $post->user_id;
-    }
+    //     return Auth::id() === $post->user_id;
+    // }
 }

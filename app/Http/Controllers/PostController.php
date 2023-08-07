@@ -9,6 +9,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use Exception;
+use Illuminate\Http\Response;
 
 class PostController  extends Controller
 {
@@ -24,7 +25,7 @@ class PostController  extends Controller
     {
         $postDTO = PostDTO::from($request->validated());
         $post = $this->postService->create($postDTO);
-        return response()->json($post, 201);
+        return response()->json($post, Response::HTTP_CREATED);
     }
 
     /**
@@ -36,9 +37,9 @@ class PostController  extends Controller
         $post = $this->postService->findById($id);
 
         if ($post) {
-            return response()->json($post, 200);
+            return response()->json($post, Response::HTTP_OK);
         } else {
-            return response()->json(['message' => 'Post not found'], 404);
+            return response()->json(['message' => 'Post not found'], Response::HTTP_NOT_FOUND);
         }
     }
 
@@ -50,27 +51,16 @@ class PostController  extends Controller
             $postDTO = PostDTO::from($request->validated());
             $post = $this->postService->update($postDTO, $id);
 
-            return response()->json($post, 200);
+            return response()->json($post, Response::HTTP_OK);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Post not found'], 404);
+            return response()->json(['message' => 'Post not found'], Response::HTTP_NOT_FOUND);
         } catch (Exception $e) {
             if ($e->getMessage() === 'unauthorized') {
-                return response()->json(['message' => 'You are not authorized to update this post'], 403);
+                return response()->json(['message' => 'You are not authorized to update this post'], Response::HTTP_FORBIDDEN);
             }
-            return response()->json(['message' => $e->getMessage()], 500);
+            return response()->json(['message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        // $postDTO= PostDTO::from($request->validated());
-        // $post = $this->postService->update($postDTO, $id);
-
-        // if($post)
-        // {
-        //     return response()->json($post, 200);
-        // }
-        // else
-        // {
-        //     return response()->json(['message' => 'Post not found'], 404);
-        // }
     }
 
     /**
@@ -81,9 +71,9 @@ class PostController  extends Controller
         try {
             $this->postService->delete($id);
 
-            return response()->json(['message' => 'Post deleted successfully'], 200);
+            return response()->json(['message' => 'Post deleted successfully'], Response::HTTP_OK);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Post not found'], 404);
+            return response()->json(['message' => 'Post not found'], Response::HTTP_NOT_FOUND);
         } catch (Exception $e) {
             if ($e->getMessage() === 'unauthorized') {
                 return response()->json(['message' => 'You are not authorized to delete this post'], 403);

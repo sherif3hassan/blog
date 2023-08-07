@@ -19,9 +19,9 @@ public function register(UserDTO $userDTO)
             'email' => $userDTO->email,
             'password' => Hash::make($userDTO->password),
         ]);
-        if($user){
-            Mail::to($user->email)->send(new RegistrationConfirmation($user->name));
-        }
+        // if($user){
+        //     Mail::to($user->email)->send(new RegistrationConfirmation($user->name));
+        // }
         return  $user;
     }
 
